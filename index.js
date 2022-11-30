@@ -4,27 +4,28 @@ const schedule = require("node-schedule");
 const bot = new TelegramApi(token, { polling: true });
 
 const start = () => {
+  let chatId = 0;
   bot.setMyCommands([
     { command: "/start", description: "Начальное приветствие" },
     { command: "/info", description: "Для чего предназначен бот" },
   ]);
 
   //timescheet 1
-  schedule.scheduleJob("0 1 * * * *", function () {
+  schedule.scheduleJob("0 * * * * *", function () {
     const photoTimesheet = "Timesheet.png";
-    bot.sendMessage(343945524, "Напоминание о timesheet!");
-    bot.sendPhoto(343945524, photoTimesheet);
+    bot.sendMessage(chatId, "Напоминание о timesheet!");
+    bot.sendPhoto(chatId, photoTimesheet);
   });
 
   //timescheet 2
-  schedule.scheduleJob("0 0 12 29 * *", function () {
+  schedule.scheduleJob("* * 12 29 * *", function () {
     const photoTimesheet = "Timesheet.png";
     bot.sendMessage(343945524, "Напоминание о timesheet!");
     bot.sendPhoto(343945524, photoTimesheet);
   });
 
   //newYear
-  schedule.scheduleJob("0 0 9 * * *", function () {
+  schedule.scheduleJob("* * 9 * * *", function () {
     const photoNewYear = "HappyNewYear.png";
     const presentDate = new Date();
     const newYearDate = new Date("01/01/2023");
@@ -37,9 +38,9 @@ const start = () => {
 
   bot.on("message", async (msg) => {
     const text = msg.text;
-    const chatId = msg.chat.id;
     // console.log(chatId);
     if (text === "/start") {
+      chatId = msg.chat.id;
       return bot.sendMessage(
         chatId,
         `Добро пожаловать в телеграм бот для рабочих уведомлений и напоминаний`
