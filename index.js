@@ -10,7 +10,7 @@ const start = () => {
   ]);
 
   //timescheet 1
-  schedule.scheduleJob("0 0 12 13 * *", function () {
+  schedule.scheduleJob("0 1 * * * *", function () {
     const photoTimesheet = "Timesheet.png";
     bot.sendMessage(343945524, "Напоминание о timesheet!");
     bot.sendPhoto(343945524, photoTimesheet);
@@ -52,7 +52,6 @@ const start = () => {
         `Телеграм бот для рабочих уведомлений и напоминаний`
       );
     }
-    return bot.sendMessage(chatId, "Произошла ошибка, попробую еще раз!");
   });
 };
 
