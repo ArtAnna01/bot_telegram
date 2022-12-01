@@ -1,59 +1,81 @@
 const TelegramApi = require("node-telegram-bot-api");
-const token = "5687612665:AAG11GwwVIN9RjoFX7Mp1YaZ4T46NRv303o";
+const token = "5951061062:AAHluK0IgPYow5LAAVK9uQj2qw0tOv-Cuoc";
 const schedule = require("node-schedule");
 const bot = new TelegramApi(token, { polling: true });
 
-const start = () => {
-  let chatId = 0;
-  bot.setMyCommands([
-    { command: "/start", description: "Начальное приветствие" },
-    { command: "/info", description: "Для чего предназначен бот" },
-  ]);
-
+const jobs = (chatId) => {
   //timescheet 1
-  schedule.scheduleJob("0 * * * * *", function () {
+  schedule.scheduleJob("0 12 13,29 * *", function () {
     const photoTimesheet = "Timesheet.png";
     bot.sendMessage(chatId, "Напоминание о timesheet!");
     bot.sendPhoto(chatId, photoTimesheet);
   });
 
-  //timescheet 2
-  schedule.scheduleJob("* * 12 29 * *", function () {
-    const photoTimesheet = "Timesheet.png";
-    bot.sendMessage(343945524, "Напоминание о timesheet!");
-    bot.sendPhoto(343945524, photoTimesheet);
-  });
-
-  //newYear
-  schedule.scheduleJob("* * 9 * * *", function () {
+  //newYear "0 10 * * *"
+  schedule.scheduleJob("0 0 10 * * *", function () {
     const photoNewYear = "HappyNewYear.png";
     const presentDate = new Date();
     const newYearDate = new Date("01/01/2023");
     const date = Math.floor(
       (newYearDate.getTime() - presentDate.getTime()) / (1000 * 3600 * 24)
     );
-    bot.sendMessage(343945524, `До Нового Года осталось ${date} дней!`);
-    bot.sendPhoto(343945524, photoNewYear);
+    bot.sendMessage(chatId, `До Нового Года осталось ${date} дней!`);
+    bot.sendPhoto(chatId, photoNewYear);
   });
 
+  console.log(Object.keys(schedule.scheduledJobs));
+};
+
+const start = async () => {
+  const admins = [114459214, 343945524];
+  bot.setMyCommands([
+    { command: "/start", description: "Начальное приветствие" },
+    { command: "/info", description: "Для чего предназначен бот" },
+    { command: "/jobs", description: "Список событий" },
+  ]);
+
   bot.on("message", async (msg) => {
+    console.log(msg);
+    const userId = msg.from.id;
     const text = msg.text;
-    // console.log(chatId);
-    if (text === "/start") {
-      chatId = msg.chat.id;
+    const chatId = msg.chat.id;
+    if (text?.includes("/start") && admins.includes(userId)) {
+      let jobList = schedule.scheduledJobs; //Get All scheduled jobs
+
+      if (jobList) {
+        Object.values(jobList).map((job) => {
+          console.log("Delete Job", job.name);
+
+          schedule.cancelJob(job.name);
+        });
+      }
+      jobs(chatId);
       return bot.sendMessage(
         chatId,
-        `Добро пожаловать в телеграм бот для рабочих уведомлений и напоминаний`
+        `Вас приветствует телеграм бот для рабочих уведомлений и напоминаний`
       );
     }
 
-    if (text === "/info") {
+    if (text?.includes("/jobs")) {
+      const jobsarr = Object.values(schedule.scheduledJobs)
+        .map((el) => el.name)
+        .join("\r\n");
+
+      return bot.sendMessage(
+        chatId,
+        `${jobsarr ? jobsarr : "Чирик-чирик список пуст"}`
+      );
+    }
+
+    if (text?.includes("/info")) {
       return bot.sendMessage(
         chatId,
         `Телеграм бот для рабочих уведомлений и напоминаний`
       );
     }
+
+    return bot.sendMessage(chatId, "Бип-бип не узнаю владельца :)");
   });
 };
 
-start();
+start().catch((err) => console.log(err));
