@@ -5,14 +5,14 @@ const bot = new TelegramApi(token, { polling: true });
 
 const jobs = (chatId) => {
   //timescheet 1
-  schedule.scheduleJob("0 12 13,29 * *", function () {
+  schedule.scheduleJob("0 10 13,29 * *", function () {
     const photoTimesheet = "Timesheet.png";
     bot.sendMessage(chatId, "Напоминание о timesheet!");
     bot.sendPhoto(chatId, photoTimesheet);
   });
 
   //newYear "0 10 * * *"
-  schedule.scheduleJob("0 25 4 * * *", function () {
+  schedule.scheduleJob("0 35 1 * * *", function () {
     const photoNewYear = "HappyNewYear.png";
     const presentDate = new Date();
     const newYearDate = new Date("01/01/2023");
