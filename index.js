@@ -12,7 +12,7 @@ const jobs = (chatId) => {
   });
 
   //newYear "0 10 * * *"
-  schedule.scheduleJob("0 0 10 * * *", function () {
+  schedule.scheduleJob("0 25 4 * * *", function () {
     const photoNewYear = "HappyNewYear.png";
     const presentDate = new Date();
     const newYearDate = new Date("01/01/2023");
