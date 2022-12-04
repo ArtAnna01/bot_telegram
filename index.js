@@ -15,14 +15,22 @@ const jobs = (chatId) => {
   schedule.scheduleJob("0 0 7 */ * *", function () {
     const photoNewYear = "HappyNewYear.png";
     const presentDate = new Date();
-    const newYearDate = new Date("01/01/2023");
+    const newYearDate = new Date("01/01/2022");
     const date = Math.floor(
       (newYearDate.getTime() - presentDate.getTime()) / (1000 * 3600 * 24)
     );
-    if (21 < date < 25 && date < 5) {
+    // console.log(Number.isNaN(date));
+
+    if (25 > date > 21) {
       bot.sendMessage(chatId, `До Нового Года осталось ${date} дня!`);
       bot.sendPhoto(chatId, photoNewYear);
-    } else if (date == 21 && date == 1) {
+    } else if (date === 21) {
+      bot.sendMessage(chatId, `До Нового Года остался ${date} день!`);
+      bot.sendPhoto(chatId, photoNewYear);
+    } else if (5 > date > 1) {
+      bot.sendMessage(chatId, `До Нового Года осталось ${date} дня!`);
+      bot.sendPhoto(chatId, photoNewYear);
+    } else if (date === 1) {
       bot.sendMessage(chatId, `До Нового Года остался ${date} день!`);
       bot.sendPhoto(chatId, photoNewYear);
     } else {
@@ -31,7 +39,7 @@ const jobs = (chatId) => {
     }
   });
 
-  console.log(Object.keys(schedule.scheduledJobs));
+  // console.log(Object.keys(schedule.scheduledJobs));
 };
 
 const start = async () => {
