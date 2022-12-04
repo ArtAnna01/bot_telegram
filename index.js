@@ -4,23 +4,31 @@ const schedule = require("node-schedule");
 const bot = new TelegramApi(token, { polling: true });
 
 const jobs = (chatId) => {
-  //timescheet 1
-  schedule.scheduleJob("0 0 10 13,29 * *", function () {
+  //timescheets
+  schedule.scheduleJob("0 0 9 /13,29 * *", function () {
     const photoTimesheet = "Timesheet.png";
     bot.sendMessage(chatId, "Напоминание о timesheet!");
     bot.sendPhoto(chatId, photoTimesheet);
   });
 
   //newYear "0 10 * * *"
-  schedule.scheduleJob("0 0 7 * * *", function () {
+  schedule.scheduleJob("0 0 7 */ * *", function () {
     const photoNewYear = "HappyNewYear.png";
     const presentDate = new Date();
     const newYearDate = new Date("01/01/2023");
     const date = Math.floor(
       (newYearDate.getTime() - presentDate.getTime()) / (1000 * 3600 * 24)
     );
-    bot.sendMessage(chatId, `До Нового Года осталось ${date} дней!`);
-    bot.sendPhoto(chatId, photoNewYear);
+    if (21 < date < 25 && date < 5) {
+      bot.sendMessage(chatId, `До Нового Года осталось ${date} дня!`);
+      bot.sendPhoto(chatId, photoNewYear);
+    } else if (date == 21 && date == 1) {
+      bot.sendMessage(chatId, `До Нового Года остался ${date} день!`);
+      bot.sendPhoto(chatId, photoNewYear);
+    } else {
+      bot.sendMessage(chatId, `До Нового Года осталось ${date} дней!`);
+      bot.sendPhoto(chatId, photoNewYear);
+    }
   });
 
   console.log(Object.keys(schedule.scheduledJobs));
@@ -45,7 +53,6 @@ const start = async () => {
       if (jobList) {
         Object.values(jobList).map((job) => {
           console.log("Delete Job", job.name);
-
           schedule.cancelJob(job.name);
         });
       }
@@ -74,7 +81,7 @@ const start = async () => {
       );
     }
 
-    return bot.sendMessage(chatId, "Бип-бип не узнаю владельца :)");
+    // return bot.sendMessage(chatId, "Бип-бип не узнаю владельца :)");
   });
 };
 
